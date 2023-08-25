@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Radio Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .radio-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .channel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .channel-controls button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .channel-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        .channel-counter {
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .volume-slider {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .image-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="radio-container">
+        <h1>Radio Online</h1>
+
+        <div class="image-container">
+            <img src="music.jpg" alt="Radio Image" style="max-width: 100%;">
+        </div>
+
+        <div class="channel-controls">
+            <button id="prevChannel">&#8249;</button>
+            <div class="channel-counter" id="channelCounter">Canal 1</div>
+            <button id="nextChannel">&#8250;</button>
+        </div>
+
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+    </div>
+
+    <audio id="radioPlayer" loop>
+        <source id="audioSource" type="audio/mpeg">
+        Tu navegador no soporta la reproducción de audio.
+    </audio>
+
+    <script>
+        const audioSource = document.getElementById('audioSource');
+        const radioPlayer = document.getElementById('radioPlayer');
+        const prevChannelButton = document.getElementById('prevChannel');
+        const nextChannelButton = document.getElementById('nextChannel');
+        const channelCounter = document.getElementById('channelCounter');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        const channels = [
+            'Breezeblocks.mp3',
+            'channel2.mp3',
+            'channel3.mp3',
+            'channel4.mp3',
+            'channel5.mp3'
+        ];
+        let currentChannelIndex = 0;
+        let currentChannelTime = 0;
+
+        function changeChannel(index) {
+            audioSource.src = channels[index];
+            radioPlayer.load();
+            radioPlayer.currentTime = currentChannelTime;
+            radioPlayer.play();
+            updateChannelCounter();
+        }
+
+        function updateChannelCounter() {
+            channelCounter.textContent = `Canal ${currentChannelIndex + 1}`;
+        }
+
+        prevChannelButton.addEventListener('click', () => {
+            currentChannelTime = radioPlayer.currentTime;
+            if (currentChannelIndex > 0) {
+                currentChannelIndex--;
+            } else {
+                currentChannelIndex = channels.length - 1;
+            }
+            changeChannel(currentChannelIndex);
+        });
+
+        nextChannelButton.addEventListener('click', () => {
+            currentChannelTime = radioPlayer.currentTime;
+            currentChannelIndex = (currentChannelIndex + 1) % channels.length;
+            changeChannel(currentChannelIndex);
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            radioPlayer.volume = volumeSlider.value;
+        });
+
+        // Inicializar el primer canal
+        changeChannel(currentChannelIndex);
+    </script>
+</body>
+</html>
